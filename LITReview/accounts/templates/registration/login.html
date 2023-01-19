@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="container px-5 my-5">
+        <form id="contactForm" data-sb-form-api-token="API_TOKEN" method="POST">
+            {% csrf_token %}
+            <div class="form-floating mb-3">
+                <input class="form-control" id="nomDutilisateur" name='username' type="text" placeholder="Nom d&#x27;utilisateur" data-sb-validations="required" />
+                <label for="nomDutilisateur">Nom d&#x27;utilisateur</label>
+                <div class="invalid-feedback" data-sb-feedback="nomDutilisateur:required">Nom d&#x27;utilisateur is required.</div>
+            </div>
+            <div class="form-floating mb-3">
+                <input class="form-control" id="motDePasse" name='password' type="password" placeholder="Mot de passe" data-sb-validations="required" />
+                <label for="motDePasse">Mot de passe</label>
+                <div class="invalid-feedback" data-sb-feedback="motDePasse:required">Mot de passe is required.</div>
+            </div>
+
+            <div class="d-grid">
+                <button class="btn btn-primary btn-lg disabled" id="submitButton" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+{% endblock content %}

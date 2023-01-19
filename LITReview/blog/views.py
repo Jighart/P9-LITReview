@@ -21,7 +21,7 @@ from .models import Review
 #     return render(request, 'blog/review/list.html', context)
 
 class ReviewListView(generic.ListView):
-    queryset = Review.objects.all()
+    queryset = Review.objects.all().order_by(('time_created')).reverse()
     paginate_by = 2
     template_name = 'blog/review/list.html'
     context_object_name = 'reviews'
