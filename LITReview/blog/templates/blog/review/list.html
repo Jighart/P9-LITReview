@@ -35,7 +35,7 @@
                             <div class="card mb-4">
                                 <a href="{% url 'review_detail' review.id %}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
                                 <div class="card-body">
-                                    <div class="small text-muted">{{review.time_created}}</div>
+                                    <div class="small text-muted">{{review.time_created|date:"H:i, F d Y"}}</div>
                                     <h2 class="card-title h4">{{review.headline}}</h2>
                                     <p class="card-text">{{review.body|truncatechars:50}}</p>
                                     <a class="btn btn-primary" href="{% url 'review_detail' review.id %}">Read more →</a>

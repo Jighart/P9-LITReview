@@ -1,6 +1,8 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage,  PageNotAnInteger
 from django.views import generic
+
+from blog.forms import ReviewForm
 from .models import Review
 
 # def review_list(request):
@@ -30,3 +32,17 @@ class ReviewListView(generic.ListView):
 def review_detail(request, id):
     review = get_object_or_404(Review, id=id)
     return render(request, 'blog/review/detail.html', {'review': review})
+
+
+def review_create(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST or None, request.FILES or None)
+        if form.is_valid():
+            new_review = form.save(commit=False)
+            new_review.user = request.user
+            new_review.save()
+            return redirect('review_list')
+    
+    else:
+        form = ReviewForm()
+    return render(request, 'blog/review/create.html', {'form': form})

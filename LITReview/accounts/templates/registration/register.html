@@ -7,18 +7,28 @@
             <div class="form-floating mb-3">
                 {{user_form.username}}
                 <label for={{user_form.username.id_for_label}}>Nom d'utilisateur</label>
-             </div>
-            <div class="form-floating mb-3">
-                {{user_form.password}}
-                <label for={{user_form.password.id_for_label}}>Mot de passe</label>
             </div>
+            {% if user_form.username.errors %}
+                <div class="text-danger">{{ user_form.username.errors }}</div>
+            {% endif %}
             <div class="form-floating mb-3">
-                {{user_form.cpassword}}
-                <label for={{user_form.cpassword.id_for_label}}>Confirmez le mot de passe</label>
+                {{user_form.password1}}
+                <label for={{user_form.password1.id_for_label}}>Mot de passe</label>
             </div>
+            {% if user_form.password1.errors %}
+                <div class="text-danger">{{ user_form.password1.errors }}</div>
+            {% endif %}
+            <div class="form-floating mb-3">
+                {{user_form.password2}}
+                <label for={{user_form.password2.id_for_label}}>Confirmez le mot de passe</label>
+            </div>
+            {% if user_form.password2.errors %}
+                <div class="text-danger">{{ user_form.password2.errors }}</div>
+            {% endif %}
             <div class="d-grid">
                 <button class="btn btn-primary btn-lg" id="submitButton" type="submit">Submit</button>
-            </div>
+            </div>           
         </form>
+
     </div>
 {% endblock content %}

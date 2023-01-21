@@ -30,7 +30,7 @@ def register_view(request):
         user_form = RegistrationForm(request.POST)
         if user_form.is_valid():
             new_user = user_form.save(commit=False)
-            new_user.set_password(user_form.cleaned_data['password'])
+            new_user.set_password(user_form.cleaned_data['password1'])
             new_user.save()
             return redirect('login_view')
         else:
