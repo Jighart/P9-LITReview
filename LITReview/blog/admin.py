@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Ticket, Review, UserFollow
+from .models import Ticket, Review
 
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
@@ -9,4 +9,4 @@ class TicketAdmin(admin.ModelAdmin):
     list_filter = ('time_created',)
 
 admin.site.register(Review)
-admin.site.register(UserFollow)
+# admin.site.register(UserFollow)

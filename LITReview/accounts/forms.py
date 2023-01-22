@@ -13,3 +13,7 @@ class RegistrationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'password1', 'password2')
+
+
+class FollowForm(forms.Form):
+    followed_user = forms.CharField(label=False,widget=forms.TextInput())
