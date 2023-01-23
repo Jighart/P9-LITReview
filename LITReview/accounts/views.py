@@ -88,7 +88,7 @@ def unfollow(request, id):
 
     if request.method == 'GET':
         follow.delete()
-        messages.success(request, f'No longer following {follow.followed_user}!')
+        messages.info(request, f'No longer following {follow.followed_user}!')
         return redirect('subscriptions')
 
     return redirect('subscriptions')

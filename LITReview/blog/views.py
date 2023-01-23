@@ -16,12 +16,12 @@ class ReviewListView(generic.ListView):
 
 def review_detail(request, id):
     review = get_object_or_404(Review, id=id)
-    return render(request, 'blog/review/detail.html', {'review': review})
+    return render(request, 'blog/review/review_detail.html', {'review': review})
 
 
 def ticket_detail(request, id):
     ticket = get_object_or_404(Ticket, id=id)
-    return render(request, 'blog/review/detail.html', {'ticket': ticket})
+    return render(request, 'blog/review/ticket_detail.html', {'ticket': ticket})
 
 
 def review_create(request):
@@ -40,7 +40,8 @@ def review_create(request):
                 ticket = new_ticket,
                 user = request.user,
                 headline = review_form.cleaned_data['headline'],
-                body = review_form.cleaned_data['body']
+                body = review_form.cleaned_data['body'],
+                rating = request.rating,
             )
             new_review.save()
 
@@ -80,20 +81,25 @@ def ticket_create(request):
 
 def ticket_respond(request, id):
     ticket = get_object_or_404(Ticket, id=id)
+    queryset = Review.objects.filter(ticket=ticket)
 
-    if request.method == 'POST':
-        review_form = ReviewForm(request.POST, request.FILES or None)
-        if review_form.is_valid():
-            new_review = Review.objects.create(
+    if queryset:
+        messages.error(request, 'Ce ticket a déjà reçu une critique en réponse')
+        return redirect('/ticket/' + id)
+
+    if request.method == 'POST' and review_form.is_valid():
+        review_form = ReviewForm(request.POST)
+        new_review = Review.objects.create(
                 ticket = ticket,
                 user = request.user,
                 headline = review_form.cleaned_data['headline'],
-                body = review_form.cleaned_data['body']
+                body = review_form.cleaned_data['body'],
+                rating = request.rating,
             )
-            new_review.save()
+        new_review.save()
 
-            messages.success(request, 'Created')
-            return redirect('review_list')
+        messages.success(request, 'Created')
+        return redirect('review_list')
     
     else:
         review_form = ReviewForm()

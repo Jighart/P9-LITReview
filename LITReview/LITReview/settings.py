@@ -72,7 +72,7 @@ TEMPLATES = [
 
 MESSAGE_TAGS = {
         messages.DEBUG: 'alert-secondary',
-        messages.INFO: 'alert-info',
+        messages.INFO: 'alert-primary',
         messages.SUCCESS: 'alert-success',
         messages.WARNING: 'alert-warning',
         messages.ERROR: 'alert-danger',
@@ -114,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fr-fr'
 
 TIME_ZONE = 'CET'
 
@@ -132,3 +132,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'review_list'
+
+LOGIN_URL = 'login_view'

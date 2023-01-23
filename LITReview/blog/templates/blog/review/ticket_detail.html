@@ -12,18 +12,15 @@
                     <!-- Post header-->
                     <header class="mb-4">
                         <!-- Post title-->
-                        <h1 class="fw-bolder mb-1">{{review.headline}}</h1>
+                        <h1 class="fw-bolder mb-1">{{ticket.title}}</h1>
                         <!-- Post meta content-->
-                        <div class="text-muted fst-italic mb-2">Posted on {{review.time_created}} by {{review.user}}</div>
-                        <!-- Post categories-->
-                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
-                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a>
+                        <div class="text-muted fst-italic mb-2">Posted on {{ticket.time_created}} by {{ticket.user}}</div>
                     </header>
                     <!-- Preview image figure-->
                     <figure class="mb-4"><img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." /></figure>
                     <!-- Post content-->
                     <section class="mb-5">
-                        <p class="fs-5 mb-4">{{review.body}}</p>
+                        <p class="fs-5 mb-4">{{ticket.body}}</p>
                     </section>
                 </article>
                 <!-- Comments section-->
