@@ -10,6 +10,8 @@ class Ticket(models.Model):
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     time_created = models.DateTimeField(default=timezone.now)
+    review_id = models.CharField(blank=True, null=True, max_length=16)
+    picture = models.ImageField(blank=True, null=True)
 
     def __str__(self):
         return self.title

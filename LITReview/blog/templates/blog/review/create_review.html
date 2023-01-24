@@ -1,13 +1,43 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <form action="." method="post">
-        {% csrf_token %}
+    <div class="container px-5 my-5">
+        <form method="post">
+            {% csrf_token %}
 
-        {% if not request.ticket %}
-        {{ticket_form.as_p}}
-        {% endif %}
-        {{review_form.as_p}}
-        <button type="submit">Submit</button>
-    </form>
+            {% if not ticket %}
+                <div class="form-floating mb-3">
+                    {{ticket_form.title}}
+                    <label for={{ticket_form.title.id_for_label}}>Titre du ticket</label>
+                </div>
+                <div class="form-floating mb-3">
+                    {{ticket_form.body}}
+                    <label for={{ticket_form.body.id_for_label}}>Description</label>
+                </div>
+                <hr>
+            {% else %}
+                {{ticket.title}}
+                <hr>
+            {% endif %}
+
+            <div class="form-floating mb-3">
+                {{review_form.headline}}
+                <label for={{review_form.headline.id_for_label}}>Titre de la critique</label>
+            </div>
+            <div class="form-floating mb-3">
+                {{review_form.body}}
+                <label for={{review_form.body.id_for_label}}>Description</label>
+            </div>
+            <div class="mb-3">
+                <label class="form-label d-block" for={{review_form.rating.id_for_label}}>Note</label>
+                {% for radio in review_form.rating %}
+                <div class="form-check form-check-inline">
+                    {{ radio }}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="d-grid">
+                <button class="btn btn-primary btn-lg mt-3" id="submitButton" type="submit">Submit</button>
+            </div>
+        </form>
 {% endblock content %}

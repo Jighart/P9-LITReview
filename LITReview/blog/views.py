@@ -1,17 +1,54 @@
 from django.contrib import messages
+from django.db.models import CharField, Value
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import PermissionDenied
 from django.views import generic
+from django.contrib.auth.models import User
 
+from itertools import chain
 from .forms import TicketForm, ReviewForm
 from .models import Ticket, Review
+from .feed import get_user_viewable_reviews, get_user_viewable_tickets, get_user_follows, get_replied_tickets
 
 
-class ReviewListView(generic.ListView):
-    queryset = Review.objects.all().order_by(('time_created')).reverse()
+def feed(request):
+    followed_users = get_user_follows(request.user)
+
+    reviews = get_user_viewable_reviews(request.user)
+    # returns queryset of reviews
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+    tickets = get_user_viewable_tickets(request.user) 
+    # returns queryset of tickets
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+
+    replied_tickets, replied_reviews = get_replied_tickets(tickets)
+
+    # combine and sort the two types of posts
+    posts = sorted(
+        chain(reviews, tickets), 
+        key=lambda post: post.time_created, 
+        reverse=True
+    )
+
+    print(f'Posts: {posts}')
+
+    context = {
+        'posts': posts,
+        'r_tickets': replied_tickets,
+        'r_reviews': replied_reviews,
+        'title': 'Feed',
+        'followed_users': followed_users
+    }
+
+    return render(request, 'blog/review/list.html', context)
+
+
+class TicketListView(generic.ListView):
+    queryset = Ticket.objects.all().order_by('-time_created')
     paginate_by = 2
     template_name = 'blog/review/list.html'
-    context_object_name = 'reviews'
+    context_object_name = 'tickets'
 
 
 def review_detail(request, id):
@@ -21,29 +58,32 @@ def review_detail(request, id):
 
 def ticket_detail(request, id):
     ticket = get_object_or_404(Ticket, id=id)
-    return render(request, 'blog/review/ticket_detail.html', {'ticket': ticket})
+    get_user_viewable_reviews(request.user)
+    return render(request, 'blog/review/ticket_detail.html', {'ticket': ticket})    
+
 
 
 def review_create(request):
     if request.method == 'POST':
-        ticket_form = TicketForm(request.POST, request.FILES or None)
-        review_form = ReviewForm(request.POST)
-        if ticket_form.is_valid() and review_form.is_valid():
-            new_ticket = Ticket.objects.create(
-                user = request.user,
-                title = ticket_form.cleaned_data['title'],
-                body = ticket_form.cleaned_data['body']
-            )
-            new_ticket.save()
+            ticket_form = TicketForm(request.POST, request.FILES or None)
+            review_form = ReviewForm(request.POST)
+            if ticket_form.is_valid() and review_form.is_valid():
+                new_ticket = Ticket.objects.create(
+                    user = request.user,
+                    title = ticket_form.cleaned_data['title'],
+                    body = ticket_form.cleaned_data['body']
+                )
+                new_review = Review.objects.create(
+                    ticket = new_ticket,
+                    user = request.user,
+                    headline = review_form.cleaned_data['headline'],
+                    body = review_form.cleaned_data['body'],
+                    rating = review_form.cleaned_data['rating'],
+                )
 
-            new_review = Review.objects.create(
-                ticket = new_ticket,
-                user = request.user,
-                headline = review_form.cleaned_data['headline'],
-                body = review_form.cleaned_data['body'],
-                rating = request.rating,
-            )
-            new_review.save()
+            new_ticket.review_id = new_review.id
+            new_review.save()            
+            new_ticket.save()
 
             messages.success(request, 'Your review has been posted!')
             return redirect('review_list')
@@ -67,7 +107,7 @@ def ticket_create(request):
             new_ticket = Ticket.objects.create(
                 user = request.user,
                 title = ticket_form.cleaned_data['title'],
-                body = ticket_form.cleaned_data['body']
+                body = ticket_form.cleaned_data['body'],
             )
             new_ticket.save()
 
@@ -81,29 +121,36 @@ def ticket_create(request):
 
 def ticket_respond(request, id):
     ticket = get_object_or_404(Ticket, id=id)
-    queryset = Review.objects.filter(ticket=ticket)
+    review_form = ReviewForm(request.POST)
 
-    if queryset:
+    if ticket.review_id is not None:
         messages.error(request, 'Ce ticket a déjà reçu une critique en réponse')
         return redirect('/ticket/' + id)
 
     if request.method == 'POST' and review_form.is_valid():
-        review_form = ReviewForm(request.POST)
         new_review = Review.objects.create(
                 ticket = ticket,
                 user = request.user,
                 headline = review_form.cleaned_data['headline'],
                 body = review_form.cleaned_data['body'],
-                rating = request.rating,
+                rating = review_form.cleaned_data['rating'],
             )
         new_review.save()
 
-        messages.success(request, 'Created')
-        return redirect('review_list')
+        ticket.review_id = new_review.id
+        ticket.save()
+        messages.success(request, 'Your review has been posted!')
+        return redirect('/ticket/' + id)
     
     else:
         review_form = ReviewForm()
-    return render(request, 'blog/review/create_review.html', {'review_form': review_form})
+
+    context = {
+        'ticket': ticket,
+        'review_form': review_form,
+        'title': 'Nouvelle critique'
+    }
+    return render(request, 'blog/review/create_review.html', context)
 
 
 def review_edit(request, id):
@@ -174,3 +221,7 @@ def review_delete(request, id):
         return redirect('review_list')
 
     return render(request, 'blog/review/delete.html', {'review': review})
+
+# ----------------------------------
+
+

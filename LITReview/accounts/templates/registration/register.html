@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="container px-5 my-5">
-        <form id="contactForm" data-sb-form-api-token="API_TOKEN"method="POST">
+        <form method="POST">
             {% csrf_token %}
             <div class="form-floating mb-3">
                 {{user_form.username}}
@@ -26,9 +26,8 @@
                 <div class="text-danger">{{ user_form.password2.errors }}</div>
             {% endif %}
             <div class="d-grid">
-                <button class="btn btn-primary btn-lg" id="submitButton" type="submit">Submit</button>
+                <button class="btn btn-primary btn-lg mt-3" id="submitButton" type="submit">Submit</button>
             </div>           
         </form>
-
     </div>
 {% endblock content %}

@@ -3,91 +3,72 @@
 
 {% block content %}
     <!-- Page header with logo and tagline-->
-    <header class="py-5 bg-light border-bottom mb-4">
+    {% comment %} <header class="py-3 bg-light border-bottom mb-5">
         <div class="container">
-            <div class="text-center my-5">
-                <h1 class="fw-bolder">Welcome {{user.username}}!</h1>
-                <p class="lead mb-0">A Bootstrap 5 starter layout for your next blog homepage</p>
+            <div class="text-center ">
+                <h1 class="fw-bolder">Bienvenue {{user.username}} !</h1>
             </div>
         </div>
-    </header>
+    </header> {% endcomment %}
+    <div class="container p-0">
+        <div class="row mb-2">
+          <h1 class="col-8 py-2 mb-0">
+            {% if posts %}
+              {{ title }}
+            {% endif %}
+          </h1>
+          <div class="btn-group col py-2 mt-2 mb-1" role="group">
+            <a type="button" class="btn btn-primary" href="{% url 'ticket_create' %}">Create Ticket</a>
+            <a type="button" class="btn btn-success" href="{% url 'review_create' %}">Write Review</a>
+          </div>
+        </div>
+      </div>
 
+      {% if posts %}
+
+  {% comment %} {% include 'reviews/_pagination.html' %} {% endcomment %}
+
+  {% for post in posts %}
+
+    {% if post.content_type == 'REVIEW' %}
+      {% include 'blog/review/review_snippet.html' %}
+    {% elif post.content_type == 'TICKET' %}
+      {% include 'blog/review/ticket_snippet.html' %}
+    {% endif %}
+
+  {% endfor %}
+  {% endif %}
     <!-- Page content-->
     <div class="container">
         <div class="row">
-            <!-- Blog entries-->
-            {% comment %} <div class="col-lg-8"> {% endcomment %}
-                {% comment %} <!-- Featured blog post-->
-                <div class="card mb-4">
-                    <a href="#!"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                    <div class="card-body">
-                        <div class="small text-muted">January 1, 2022</div>
-                        <h2 class="card-title">Featured Post Title</h2>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
-                        <a class="btn btn-primary" href="#!">Read more →</a>
+            {% for ticket in tickets %}
+            <div class="card mb-3" >
+                <div class="row g-0">
+                    <div class="col-md-2">
+                        <img src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" class="img-fluid rounded-start" alt="...">
                     </div>
-                </div> {% endcomment %}
-                <!-- Nested row for non-featured blog posts-->
-                <div class="row">
-                    {% for review in reviews %}
-                        <div class="col-lg-6">
-                            <!-- Blog post-->
-                            <div class="card mb-4">
-                                <a href="{% url 'review_detail' review.id %}"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." /></a>
-                                <div class="card-body">
-                                    <div class="small text-muted">{{review.time_created|date:"H:i, F d Y"}}</div>
-                                    <h2 class="card-title h4">{{review.headline}}</h2>
-                                    <p class="card-text">{{review.body|truncatechars:50}}</p>
-                                    <a class="btn btn-primary" href="{% url 'review_detail' review.id %}">Read more →</a>
-                                </div>
-                            </div>
+                    <div class="col-md-5">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ticket.title}}</h5>
+                            <p class="card-text">{{ticket.body|truncatechars:150}}</p>
+                            <p class="card-text"><small class="text-muted">{{ticket.time_created|date:"H:i, F d Y"}}</small></p>
                         </div>
-                    {% endfor %}
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card-body">
+                            {% if ticket.review_id %}
+                            <a class="btn btn-secondary" href="{% url 'ticket_detail' ticket.id %}">Lire la critique</a>
+                            {% else %}
+                                <a class="btn btn-primary" href="{% url 'ticket_respond' ticket.id %}">Envoyer une critique</a>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
+                {% endfor %}
                 <!-- Pagination-->
                 {% include 'blog/layout/pagination.html' with page=page_obj %}
             </div>
-            {% comment %} <!-- Side widgets-->
-            <div class="col-lg-4">
-                <!-- Search widget-->
-                <div class="card mb-4">
-                    <div class="card-header">Search</div>
-                    <div class="card-body">
-                        <div class="input-group">
-                            <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
-                            <button class="btn btn-primary" id="button-search" type="button">Go!</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Categories widget-->
-                <div class="card mb-4">
-                    <div class="card-header">Categories</div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <ul class="list-unstyled mb-0">
-                                    <li><a href="#!">Web Design</a></li>
-                                    <li><a href="#!">HTML</a></li>
-                                    <li><a href="#!">Freebies</a></li>
-                                </ul>
-                            </div>
-                            <div class="col-sm-6">
-                                <ul class="list-unstyled mb-0">
-                                    <li><a href="#!">JavaScript</a></li>
-                                    <li><a href="#!">CSS</a></li>
-                                    <li><a href="#!">Tutorials</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Side widget-->
-                <div class="card mb-4">
-                    <div class="card-header">Side Widget</div>
-                    <div class="card-body">You can put anything you want inside of these side widgets. They are easy to use, and feature the Bootstrap 5 card component!</div>
-                </div>
-            </div> {% endcomment %}
         </div>
     </div>
-
+</div>
 {% endblock content %}

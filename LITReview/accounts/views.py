@@ -18,7 +18,7 @@ def login_view(request):
 
             if user is not None:
                 login(request, user)
-                
+                messages.success(request, 'Connecté !')
                 return redirect('review_list')
         else:
             return render(request, 'registration/login.html', {})

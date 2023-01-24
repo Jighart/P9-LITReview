@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
     <div class="container px-5 my-5">
-        <form id="contactForm" data-sb-form-api-token="API_TOKEN" method="POST">
+        <form method="POST">
             {% csrf_token %}
             <div class="form-floating mb-3">
                 <input class="form-control" id="nomDutilisateur" name='username' type="text" placeholder="Nom d&#x27;utilisateur" data-sb-validations="required" />
@@ -17,10 +16,8 @@
             </div>
 
             <div class="d-grid">
-                <button class="btn btn-primary btn-lg" id="submitButton" type="submit">Submit</button>
+                <button class="btn btn-primary btn-lg mt-3" id="submitButton" type="submit">Submit</button>
             </div>
         </form>
     </div>
-    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
-
 {% endblock content %}
