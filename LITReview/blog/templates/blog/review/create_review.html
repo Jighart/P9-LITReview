@@ -14,6 +14,9 @@
                     {{ticket_form.body}}
                     <label for={{ticket_form.body.id_for_label}}>Description</label>
                 </div>
+                <div>
+                    {{ticket_form.picture}}
+                </div>
                 <hr>
             {% else %}
                 {{ticket.title}}
@@ -37,7 +40,7 @@
                 {% endfor %}
             </div>
             <div class="d-grid">
-                <button class="btn btn-primary btn-lg mt-3" id="submitButton" type="submit">Submit</button>
+                <button class="btn btn-primary btn-lg mt-4" id="submitButton" type="submit">Submit</button>
             </div>
         </form>
 {% endblock content %}

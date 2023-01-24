@@ -67,12 +67,14 @@ def review_create(request):
     if request.method == 'POST':
             ticket_form = TicketForm(request.POST, request.FILES or None)
             review_form = ReviewForm(request.POST)
-            if ticket_form.is_valid() and review_form.is_valid():
+            if all(ticket_form.is_valid(), review_form.is_valid()):
                 new_ticket = Ticket.objects.create(
                     user = request.user,
                     title = ticket_form.cleaned_data['title'],
-                    body = ticket_form.cleaned_data['body']
+                    body = ticket_form.cleaned_data['body'],
+                    picture = ticket_form.cleaned_data['picture']
                 )
+
                 new_review = Review.objects.create(
                     ticket = new_ticket,
                     user = request.user,
@@ -108,6 +110,7 @@ def ticket_create(request):
                 user = request.user,
                 title = ticket_form.cleaned_data['title'],
                 body = ticket_form.cleaned_data['body'],
+                picture = ticket_form.cleaned_data['picture']
             )
             new_ticket.save()
 

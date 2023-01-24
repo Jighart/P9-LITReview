@@ -5,7 +5,8 @@ from .models import Ticket, Review
 class TicketForm(forms.ModelForm):
     title = forms.CharField(max_length=128, help_text='', required=True, widget=forms.TextInput(attrs={'class':'form-control', 'id':'title', 'type':'text', 'placeholder':'Titre'}))
     body = forms.CharField(max_length=2048, help_text='', required=True, widget=forms.Textarea(attrs={'class':'form-control', 'id':'description', 'style':'height: 10rem', 'placeholder':'Description'}))
-    picture = forms.ImageField(required=False, widget=forms.FileInput())
+    picture = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class':'form-control', 'id':'picture', 'type':'file'}))
+
     
     class Meta:
         model = Ticket

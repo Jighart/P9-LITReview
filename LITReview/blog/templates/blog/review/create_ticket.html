@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="container px-5 my-5">
-        <form method="POST"> 
+        <form method="POST" enctype="multipart/form-data"> 
             {% csrf_token %}
             <div class="form-floating mb-3">
                 {{ticket_form.title}}
@@ -12,8 +12,11 @@
                 {{ticket_form.body}}
                 <label for={{ticket_form.body.id_for_label}}>Description</label>
             </div>
+            <div>
+                {{ticket_form.picture}}
+            </div>
             <div class="d-grid">
-                <button class="btn btn-primary btn-lg mt-3" id="submitButton" type="submit">Submit</button>
+                <button class="btn btn-primary btn-lg mt-4" id="submitButton" type="submit">Submit</button>
             </div>
         </form>
         {{ticket_form.errors}}

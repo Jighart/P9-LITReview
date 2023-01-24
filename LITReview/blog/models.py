@@ -3,6 +3,8 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
+from PIL import Image
+
 
 class Ticket(models.Model):
     title = models.CharField(max_length=128)
@@ -12,6 +14,17 @@ class Ticket(models.Model):
     time_created = models.DateTimeField(default=timezone.now)
     review_id = models.CharField(blank=True, null=True, max_length=16)
     picture = models.ImageField(blank=True, null=True)
+
+    IMAGE_MAX_SIZE = (400, 400)
+
+    def resize_image(self):
+        picture = Image.open(self.picture)
+        picture.thumbnail(self.IMAGE_MAX_SIZE)
+        picture.save(self.picture.path)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.resize_image()
 
     def __str__(self):
         return self.title
