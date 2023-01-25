@@ -9,19 +9,21 @@
         <div class="col-2" style="overflow: hidden;">
         {% if post.ticket.picture %}
             <img src="{{ post.ticket.picture.url }}" class="img-fluid object-fit-cover rounded-start" style="height: 100%;" alt="{{ post.ticket.title }}">
+        {% else %}
+            <i class="bi bi-book h1 text-primary"></i>
         {% endif %}
         </div>
         <div class="col-6 me-auto border-end border-secondary-subtle border-1">
             <div class="card-body">
                 <h5 class="card-title">{{ post.ticket.title }}</h5>
-                <p class="card-text">{{ post.ticket.body|truncatechars:200 }}</p>
+                <p class="card-text">{{ post.ticket.body|truncatechars:250 }}</p>
                 <p class="card-text"><small class="text-muted">{{ post.ticket.time_created|date:"d/m/y, H:i" }} -- {{post.ticket.user}}</small></p>
             </div>
         </div>
         <div class="col-4">
             <div class="card-body">
                 <h5 class="card-title">{{ post.headline }}</h5>
-                <p class="card-text">{{ post.body|truncatechars:200 }}</p>
+                <p class="card-text">{{ post.body|truncatechars:100 }}</p>
                 <p class="star-rating" id="stars">
                     <i class="bi {% if post.rating > 0 %}bi-star-fill text-warning{% else %}bi-star{% endif %}"></i>
                     <i class="bi {% if post.rating > 1 %}bi-star-fill text-warning{% else %}bi-star{% endif %}"></i>
@@ -29,7 +31,7 @@
                     <i class="bi {% if post.rating > 3 %}bi-star-fill text-warning{% else %}bi-star{% endif %}"></i>
                     <i class="bi {% if post.rating > 4 %}bi-star-fill text-warning{% else %}bi-star{% endif %}"></i>
                   </p>
-                <p class="card-text"><small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }} by {{post.user}}</small></p>
+                <p class="card-text"><small class="text-muted">{{ post.time_created|date:"d/m/y, H:i" }} -- {{post.user}}</small></p>
                 <a type="button" class="btn btn-primary btn-sm" href="{% url 'ticket_detail' post.ticket.id %}">Voir plus...</a>
             </div>
         </div>

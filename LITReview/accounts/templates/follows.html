@@ -4,19 +4,19 @@
 
 <div class="container p-0">
     <div class="row mb-2">
-        <h1 class="col-8 py-2 mb-0">Subscriptions</h1>
+        <h1 class="col-8 py-2 mb-0">Abonnements</h1>
     </div>
 </div>
 
 <div class="content-section">
     
   <!-- Subscription form -->
-  <h4 class="mb-3 mt-2">Add a Subscription</h4>
+  <h4 class="mb-3 mt-2">Ajoutez un utilisateur à suivre</h4>
   <fieldset class="form-group mt-3">
     <form class="input-group mb-3" method="POST">
       {% csrf_token %}
       <label class="d-none" for="followed_user"></label>
-      <input class="form-control" id="followed_user" type="text" name="followed_user" placeholder="Enter username">
+      <input class="form-control" id="followed_user" type="text" name="followed_user" placeholder="Entrez le nom de l'utilisateur">
       <div class="input-group-append">
         <button class="btn btn-success" id="button-addon2" type="submit">Subscribe</button>
       </div>
@@ -26,7 +26,7 @@
     <div class="row">
         <!-- Following -->
           <div class="col">
-            <h4 class="mb-3">Followed users ({{ user_follows.count }})</h4>
+            <h4 class="mb-3">Vous suivez {{ user_follows.count }} utilisateur{{ user_follows.count|pluralize }}</h4>
 
             {% if user_follows %}
               <div class="card mb-5">
@@ -35,8 +35,8 @@
                     <li class="list-group-item">
                       <p class="mb-0">
                         {{ follow.followed_user.username }}
-                        <a class="btn btn-outline-danger btn-sm float-right" href="{% url 'unfollow' follow.id %}">
-                          Unsubscribe
+                        <a class="btn btn-outline-danger btn-sm float-right ms-2" href="{% url 'unfollow' follow.id %}">
+                          Supprimer
                         </a>
                       </p>
                     </li>
@@ -56,7 +56,7 @@
 
   <!-- Followers -->
   <div class="col">
-    <h4 class="mb-3">Users following you ({{ followed_by.count }})</h4>
+    <h4 class="mb-3">Vous êtes suivis par {{ followed_by.count }} utilisateur{{ followed_by.count|pluralize }}</h4>
     {% if followed_by %}
       <div class="card mb-4">
         <ul class="list-group list-group-flush">

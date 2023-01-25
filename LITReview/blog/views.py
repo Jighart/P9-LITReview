@@ -3,27 +3,19 @@ from django.db.models import CharField, Value
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-# from django.views import generic
-# from django.utils.datastructures import MultiValueDictKeyError
 
 from itertools import chain
 from .forms import TicketForm, ReviewForm
 from .models import Ticket, Review
-from .feed import get_user_viewable_reviews, get_user_viewable_tickets, get_user_follows, get_replied_tickets
+from .feed import get_user_viewable_reviews, get_user_viewable_tickets
 
 
 def feed(request):
-    followed_users = get_user_follows(request.user)
-
     reviews = get_user_viewable_reviews(request.user)
-    # returns queryset of reviews
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
     tickets = get_user_viewable_tickets(request.user) 
-    # returns queryset of tickets
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
-
-    replied_tickets, replied_reviews = get_replied_tickets(tickets)
 
     posts = sorted(
         chain(reviews, tickets), 
@@ -40,27 +32,18 @@ def feed(request):
 
     context = {
         'posts': posts,
-        # 'r_tickets': replied_tickets,
-        # 'r_reviews': replied_reviews,
         'title': 'Feed',
-        # 'followed_users': followed_users
     }
 
-    return render(request, 'blog/review/list.html', context)
+    return render(request, 'blog/review/feed.html', context)
 
 
 def own_posts(request):
-    user = request.user
-
-    followed_users = get_user_follows(request.user)
-
-    reviews = Review.objects.filter(user=user)
+    reviews = Review.objects.filter(user=request.user)
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
-    tickets = Ticket.objects.filter(user=user)
+    tickets = Ticket.objects.filter(user=request.user)
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
-
-    replied_tickets, replied_reviews = get_replied_tickets(tickets)
 
     posts = sorted(
         chain(reviews, tickets), 
@@ -68,21 +51,26 @@ def own_posts(request):
         reverse=True
     )
 
+    if posts:
+        paginator = Paginator(posts, 5)
+        page = request.GET.get('page')
+        posts = paginator.get_page(page)
+    else:
+        posts = None
+
     context = {
         'posts': posts,
-        # 'r_tickets': replied_tickets,
-        # 'r_reviews': replied_reviews,
-        'title': 'Feed',
-        # 'followed_users': followed_users
+        'title': 'Vos posts',
     }
 
-    return render(request, 'blog/review/list.html', context)
+    return render(request, 'blog/review/feed.html', context)
 
 
 def ticket_detail(request, id):
     ticket = get_object_or_404(Ticket, id=id)
     review = None
-    if ticket.review_id:
+
+    if ticket.has_review:
         review = Review.objects.get(ticket=ticket)
 
     context = {
@@ -93,18 +81,20 @@ def ticket_detail(request, id):
     return render(request, 'blog/review/ticket_detail.html', context)    
 
 
-
 def review_create(request):
     if request.method == 'POST':
         ticket_form = TicketForm(request.POST, request.FILES or None)
         review_form = ReviewForm(request.POST)
+
         if all([ticket_form.is_valid() and review_form.is_valid()]):
             new_ticket = Ticket.objects.create(
                 user = request.user,
                 title = ticket_form.cleaned_data['title'],
                 body = ticket_form.cleaned_data['body'],
                 picture = ticket_form.cleaned_data['picture'],
+                has_review = True,
             )
+            new_ticket.save()
 
             new_review = Review.objects.create(
                 ticket = new_ticket,
@@ -112,14 +102,11 @@ def review_create(request):
                 headline = review_form.cleaned_data['headline'],
                 body = review_form.cleaned_data['body'],
                 rating = review_form.cleaned_data['rating'],
-            )
-
-            new_ticket.review_id = new_review.id
-            new_ticket.save()
+            )           
             new_review.save()            
 
-            messages.success(request, 'Your review has been posted!')
-            return redirect('review_list')
+            messages.success(request, 'Votre critique a été publiée !')
+            return redirect('feed')
     
     else:
         ticket_form = TicketForm()
@@ -135,19 +122,18 @@ def review_create(request):
 
 def ticket_create(request):
     if request.method == 'POST':
-        ticket_form = TicketForm(request.POST, request.FILES)
+        ticket_form = TicketForm(request.POST, request.FILES or None)
         if ticket_form.is_valid():
-            picture = request.FILES.get('picture', None)
             new_ticket = Ticket.objects.create(
                 user = request.user,
                 title = ticket_form.cleaned_data['title'],
                 body = ticket_form.cleaned_data['body'],
-                picture = picture,
+                picture = ticket_form.cleaned_data['picture'],
             )
             new_ticket.save()
 
-            messages.success(request, 'Created')
-            return redirect('review_list')
+            messages.success(request, 'Votre ticket a été créé !')
+            return redirect('feed')
     
     else:
         ticket_form = TicketForm()
@@ -158,7 +144,7 @@ def ticket_respond(request, id):
     ticket = get_object_or_404(Ticket, id=id)
     review_form = ReviewForm(request.POST)
 
-    if ticket.review_id is not None:
+    if ticket.has_review:
         messages.error(request, 'Ce ticket a déjà reçu une critique en réponse')
         return redirect('/ticket/' + id)
 
@@ -172,9 +158,9 @@ def ticket_respond(request, id):
             )
         new_review.save()
 
-        ticket.review_id = new_review.id
+        ticket.has_review = True
         ticket.save()
-        messages.success(request, 'Your review has been posted!')
+        messages.success(request, 'Vous avez répondu au ticket !')
         return redirect('/ticket/' + id)
     
     else:
@@ -199,8 +185,8 @@ def review_edit(request, id):
         if review_form.is_valid():
             review_form.save()
 
-            messages.success(request, 'Your review has been updated!')
-            return redirect('review_detail', id)
+            messages.success(request, 'Votre critique a été modifiée !')
+            return redirect('ticket_detail', review.ticket.id)
 
     else:
         review_form = ReviewForm(instance=review)
@@ -224,7 +210,7 @@ def ticket_edit(request, id):
         if ticket_form.is_valid():
             ticket_form.save()
 
-            messages.success(request, 'Your ticket has been updated!')
+            messages.success(request, 'Votre ticket a été modifié !')
             return redirect('ticket_detail', id)
 
     else:
@@ -246,7 +232,8 @@ def ticket_delete(request, id):
 
     if request.method == 'POST':
         ticket.delete()
-        return redirect('review_list')
+        messages.info(request, 'Votre ticket a été supprimé !')
+        return redirect('feed')
 
     return render(request, 'blog/review/delete.html', {'ticket': ticket})
 
@@ -260,14 +247,13 @@ def review_delete(request, id):
 
     if request.method == 'POST':
         ticket = Ticket.objects.get(id=review.ticket.id)
-        ticket.review_id = None
+        ticket.has_review = False
         ticket.save()
 
         review.delete()
-        return redirect('review_list')
+        messages.info(request, 'Votre critique a été supprimée !')
+        return redirect('feed')
 
     return render(request, 'blog/review/delete.html', {'review': review})
-
-# ----------------------------------
 
 

@@ -55,26 +55,3 @@ def get_user_viewable_tickets(user: User):
             pass
 
     return tickets
-
-
-def get_replied_tickets(tickets):
-    """
-    Get tickets with review response
-    Get corresponding review to link to for detail view
-    @param tickets: user tickets queryset
-    @return: list of tickets with response, list of review responses to corresponding tickets
-    """
-    replied_tickets = []
-    replied_reviews = []
-
-    for ticket in tickets:
-        try:
-            replied = Review.objects.get(ticket=ticket)
-            if replied:
-                replied_tickets.append(replied.ticket)
-                replied_reviews.append(replied)
-
-        except Review.DoesNotExist:
-            pass
-
-    return replied_tickets, replied_reviews

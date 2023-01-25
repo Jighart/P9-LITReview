@@ -1,17 +1,18 @@
 <div class="card mb-4 border-secondary-subtle border-2">
     <div class="card-header border-secondary-subtle h5">{{post.user}} a demandé une critique</div>
     <div class="row g-0 align-items-center">
-        <div class="col-2 text-center" style="overflow: hidden;">
-        {% if post.picture %}
+    {% if post.picture %}
+        <div class="col-2" style="overflow: hidden;">
             <img src="{{ post.picture.url }}" class="img-fluid object-fit-cover rounded-start" style="height: 100%;" alt="{{ post.title }}">
-        {% else %}
+    {% else %}
+        <div class="col-2 text-center">
             <i class="bi bi-book h1 text-primary"></i>
-        {% endif %}
+    {% endif %}
         </div>
         <div class="col-6 me-auto">
             <div class="card-body">
                 <h5 class="card-title">{{ post.title }}</h5>
-                <p class="card-text">{{ post.body|truncatechars:200 }}</p>
+                <p class="card-text">{{ post.body|truncatechars:250 }}</p>
                 <p class="card-text"><small class="text-muted">{{ post.time_created|date:"d/m/y, H:i" }} -- {{post.user}}</small></p>
                 <a type="button" class="btn btn-primary btn-sm" href="{% url 'ticket_detail' post.id %}">Voir plus...</a>
             </div>

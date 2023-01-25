@@ -38,6 +38,8 @@ def register_view(request):
             new_user = user_form.save(commit=False)
             new_user.set_password(user_form.cleaned_data['password1'])
             new_user.save()
+
+            messages.success(request, 'Votre compte a bien été créé !')
             return redirect('login_view')
         else:
             return render(request, 'registration/register.html', {'user_form': user_form})
@@ -54,16 +56,17 @@ def subscriptions(request):
             try:
                 followed_user = User.objects.get(username=request.POST['followed_user'])
                 if request.user == followed_user:
-                    messages.error(request, 'You can\'t subscribe to yourself!')
+                    messages.error(request, 'Vous ne pouvez pas vous suivre vous-même !')
                 else:
                     try:
                         UserFollow.objects.create(user=request.user, followed_user=followed_user)
-                        messages.success(request, f'You are now following {followed_user}!')
+                        messages.success(request, f'Vous suivez désormais {followed_user}!')
                     except IntegrityError:
-                        messages.error(request, f'You are already following {followed_user}!')
+                        messages.error(request, f'Vous suivez déjà {followed_user}!')
 
             except User.DoesNotExist:
-                messages.error(request, f'The user {follow_form.data["followed_user"]} does not exist.')
+                messages.error(request, f'L\'utilistateur {follow_form.data["followed_user"]} n\'existe pas !')
+
 
     else:
         follow_form = FollowForm()
@@ -75,7 +78,7 @@ def subscriptions(request):
         'follow_form': follow_form,
         'user_follows': user_follows,
         'followed_by': followed_by,
-        'title': 'Subscriptions',
+        'title': 'Abonnements',
     }
     return render(request, 'follows.html', context)
 
@@ -88,7 +91,7 @@ def unfollow(request, id):
 
     if request.method == 'GET':
         follow.delete()
-        messages.info(request, f'No longer following {follow.followed_user}!')
+        messages.info(request, f'Vous ne suivez plus {follow.followed_user}!')
         return redirect('subscriptions')
 
     return redirect('subscriptions')
