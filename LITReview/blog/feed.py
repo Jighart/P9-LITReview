@@ -10,8 +10,6 @@ def get_user_follows(user):
     for follow in follows:
         followed_users.append(follow.followed_user)
     
-    print(followed_users)
-    
     return followed_users
 
 
@@ -31,8 +29,6 @@ def get_user_viewable_reviews(user: User):
             reviews.append(review.id)
 
     reviews = Review.objects.filter(id__in=reviews).distinct()
-    print(f'User tickets: {own_tickets}')
-    print(f'User reviews: {reviews}')
 
     return reviews
 

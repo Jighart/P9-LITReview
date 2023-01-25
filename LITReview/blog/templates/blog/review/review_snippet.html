@@ -1,20 +1,21 @@
-<div class="card mb-3">
-    <div class="card-header h5">{{post.user}} a posté une nouvelle critique</div>
-    <div class="row g-0">
-        {% if post.ticket.picture %}
-        <div class="col-2" style="overflow: hidden;">
-            <img src="{{ post.ticket.picture.url }}" class="img-fluid rounded-start" style="height: 100%; object-fit: cover;" alt="{{ post.title }}">
-        </div>
+<div class="card mb-4 border-secondary-subtle border-2">
+    <div class="card-header border-secondary-subtle h5">
+        {% if post.user != post.ticket.user %}
+            {{post.user}} a répondu à une demande de critique</div>
+        {% else %}
+            {{post.user}} a posté une nouvelle critique</div>
         {% endif %}
-        <div class="col-6 me-auto">
+    <div class="row g-0">
+        <div class="col-2" style="overflow: hidden;">
+        {% if post.ticket.picture %}
+            <img src="{{ post.ticket.picture.url }}" class="img-fluid object-fit-cover rounded-start" style="height: 100%;" alt="{{ post.ticket.title }}">
+        {% endif %}
+        </div>
+        <div class="col-6 me-auto border-end border-secondary-subtle border-1">
             <div class="card-body">
                 <h5 class="card-title">{{ post.ticket.title }}</h5>
                 <p class="card-text">{{ post.ticket.body|truncatechars:200 }}</p>
-                <p class="card-text"><small class="text-muted">{{ post.ticket.time_created|date:"H:i, F d, Y" }} by {{post.user}}</small></p>
-                {% if post.user == user %}
-                    <a type="button" class="btn btn-primary btn-sm" href="{% url 'ticket_edit' post.id %}">Modifier</a>
-                    <a type="button" class="btn btn-secondary btn-sm" href="{% url 'ticket_delete' post.id %}">Supprimer</a>
-                {% endif %}
+                <p class="card-text"><small class="text-muted">{{ post.ticket.time_created|date:"d/m/y, H:i" }} -- {{post.ticket.user}}</small></p>
             </div>
         </div>
         <div class="col-4">
@@ -29,10 +30,7 @@
                     <i class="bi {% if post.rating > 4 %}bi-star-fill{% else %}bi-star{% endif %}"></i>
                   </p>
                 <p class="card-text"><small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }} by {{post.user}}</small></p>
-                {% if post.user == user %}
-                    <a type="button" class="btn btn-primary btn-sm" href="{% url 'review_edit' post.id %}">Modifier</a>
-                    <a type="button" class="btn btn-secondary btn-sm" href="{% url 'review_delete' post.id %}">Supprimer</a>
-                {% endif %}
+                <a type="button" class="btn btn-primary btn-sm" href="{% url 'ticket_detail' post.ticket.id %}">Voir plus...</a>
             </div>
         </div>
     </div>

@@ -2,8 +2,8 @@ from django.contrib import messages
 from django.db.models import CharField, Value
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import PermissionDenied
-from django.views import generic
-from django.utils.datastructures import MultiValueDictKeyError
+# from django.views import generic
+# from django.utils.datastructures import MultiValueDictKeyError
 
 from itertools import chain
 from .forms import TicketForm, ReviewForm
@@ -24,42 +24,65 @@ def feed(request):
 
     replied_tickets, replied_reviews = get_replied_tickets(tickets)
 
-    # combine and sort the two types of posts
     posts = sorted(
         chain(reviews, tickets), 
         key=lambda post: post.time_created, 
         reverse=True
     )
 
-    print(f'Posts: {posts}')
-
     context = {
         'posts': posts,
-        'r_tickets': replied_tickets,
-        'r_reviews': replied_reviews,
+        # 'r_tickets': replied_tickets,
+        # 'r_reviews': replied_reviews,
         'title': 'Feed',
-        'followed_users': followed_users
+        # 'followed_users': followed_users
     }
 
     return render(request, 'blog/review/list.html', context)
 
 
-class TicketListView(generic.ListView):
-    queryset = Ticket.objects.all().order_by('-time_created')
-    paginate_by = 2
-    template_name = 'blog/review/list.html'
-    context_object_name = 'tickets'
+def own_posts(request):
+    user = request.user
 
+    followed_users = get_user_follows(request.user)
 
-def review_detail(request, id):
-    review = get_object_or_404(Review, id=id)
-    return render(request, 'blog/review/review_detail.html', {'review': review})
+    reviews = Review.objects.filter(user=user)
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+    tickets = Ticket.objects.filter(user=user)
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+
+    replied_tickets, replied_reviews = get_replied_tickets(tickets)
+
+    posts = sorted(
+        chain(reviews, tickets), 
+        key=lambda post: post.time_created, 
+        reverse=True
+    )
+
+    context = {
+        'posts': posts,
+        # 'r_tickets': replied_tickets,
+        # 'r_reviews': replied_reviews,
+        'title': 'Feed',
+        # 'followed_users': followed_users
+    }
+
+    return render(request, 'blog/review/list.html', context)
 
 
 def ticket_detail(request, id):
     ticket = get_object_or_404(Ticket, id=id)
-    get_user_viewable_reviews(request.user)
-    return render(request, 'blog/review/ticket_detail.html', {'ticket': ticket})    
+    review = None
+    if ticket.review_id:
+        review = Review.objects.get(ticket=ticket)
+
+    context = {
+        'ticket': ticket,
+        'review': review,
+    }
+
+    return render(request, 'blog/review/ticket_detail.html', context)    
 
 
 
@@ -104,13 +127,14 @@ def review_create(request):
 
 def ticket_create(request):
     if request.method == 'POST':
-        ticket_form = TicketForm(request.POST, request.FILES or None)
+        ticket_form = TicketForm(request.POST, request.FILES)
         if ticket_form.is_valid():
+            picture = request.FILES.get('picture', None)
             new_ticket = Ticket.objects.create(
                 user = request.user,
                 title = ticket_form.cleaned_data['title'],
                 body = ticket_form.cleaned_data['body'],
-                picture = ticket_form.cleaned_data['picture'],
+                picture = picture,
             )
             new_ticket.save()
 
@@ -215,11 +239,16 @@ def ticket_delete(request, id):
 
 def review_delete(request, id):
     review = get_object_or_404(Review, id=id)
+    
 
     if review.user != request.user:
         raise PermissionDenied()
 
     if request.method == 'POST':
+        ticket = Ticket.objects.get(id=review.ticket.id)
+        ticket.review_id = None
+        ticket.save()
+
         review.delete()
         return redirect('review_list')
 

@@ -3,7 +3,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
-from PIL import Image
+from PIL import Image, ImageOps
 
 
 class Ticket(models.Model):
@@ -15,20 +15,22 @@ class Ticket(models.Model):
     review_id = models.CharField(blank=True, null=True, max_length=16)
     picture = models.ImageField(blank=True, null=True, upload_to='ticket_pictures')
 
-    IMAGE_MAX_SIZE = (250, 250)
-
-    if picture is True:
-        def resize_image(self):
-            picture = Image.open(self.picture)
-            picture.thumbnail(self.IMAGE_MAX_SIZE)
-            picture.save(self.picture.path)
-
-        def save(self, *args, **kwargs):
-            super().save(*args, **kwargs)
-            self.resize_image()
-
     def __str__(self):
         return self.title
+
+    IMAGE_MAX_SIZE = (250, 250)
+
+    def resize_image(self):
+        if self.picture:
+            image = Image.open(self.picture)
+            image.thumbnail(self.IMAGE_MAX_SIZE)
+            image.save(self.picture.path)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.resize_image()
+
+
 
 
 class Review(models.Model):
