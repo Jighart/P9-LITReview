@@ -26,14 +26,12 @@
 
       {% if posts %}
 
-  {% comment %} {% include 'reviews/_pagination.html' %} {% endcomment %}
-
   {% for post in posts %}
 
     {% if post.content_type == 'REVIEW' %}
-      {% include 'blog/review/review_snippet.html' %}
+        {% include 'blog/review/review_snippet.html' %}
     {% elif post.content_type == 'TICKET' %}
-      {% include 'blog/review/ticket_snippet.html' %}
+        {% include 'blog/review/ticket_snippet.html' %}
     {% endif %}
 
   {% endfor %}

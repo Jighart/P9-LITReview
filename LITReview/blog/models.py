@@ -13,18 +13,19 @@ class Ticket(models.Model):
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     time_created = models.DateTimeField(default=timezone.now)
     review_id = models.CharField(blank=True, null=True, max_length=16)
-    picture = models.ImageField(blank=True, null=True)
+    picture = models.ImageField(blank=True, null=True, upload_to='ticket_pictures')
 
-    IMAGE_MAX_SIZE = (400, 400)
+    IMAGE_MAX_SIZE = (250, 250)
 
-    def resize_image(self):
-        picture = Image.open(self.picture)
-        picture.thumbnail(self.IMAGE_MAX_SIZE)
-        picture.save(self.picture.path)
+    if picture is True:
+        def resize_image(self):
+            picture = Image.open(self.picture)
+            picture.thumbnail(self.IMAGE_MAX_SIZE)
+            picture.save(self.picture.path)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.resize_image()
+        def save(self, *args, **kwargs):
+            super().save(*args, **kwargs)
+            self.resize_image()
 
     def __str__(self):
         return self.title

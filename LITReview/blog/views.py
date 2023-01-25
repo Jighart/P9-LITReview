@@ -3,7 +3,7 @@ from django.db.models import CharField, Value
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import PermissionDenied
 from django.views import generic
-from django.contrib.auth.models import User
+from django.utils.datastructures import MultiValueDictKeyError
 
 from itertools import chain
 from .forms import TicketForm, ReviewForm
@@ -65,27 +65,27 @@ def ticket_detail(request, id):
 
 def review_create(request):
     if request.method == 'POST':
-            ticket_form = TicketForm(request.POST, request.FILES or None)
-            review_form = ReviewForm(request.POST)
-            if all(ticket_form.is_valid(), review_form.is_valid()):
-                new_ticket = Ticket.objects.create(
-                    user = request.user,
-                    title = ticket_form.cleaned_data['title'],
-                    body = ticket_form.cleaned_data['body'],
-                    picture = ticket_form.cleaned_data['picture']
-                )
+        ticket_form = TicketForm(request.POST, request.FILES or None)
+        review_form = ReviewForm(request.POST)
+        if all([ticket_form.is_valid() and review_form.is_valid()]):
+            new_ticket = Ticket.objects.create(
+                user = request.user,
+                title = ticket_form.cleaned_data['title'],
+                body = ticket_form.cleaned_data['body'],
+                picture = ticket_form.cleaned_data['picture'],
+            )
 
-                new_review = Review.objects.create(
-                    ticket = new_ticket,
-                    user = request.user,
-                    headline = review_form.cleaned_data['headline'],
-                    body = review_form.cleaned_data['body'],
-                    rating = review_form.cleaned_data['rating'],
-                )
+            new_review = Review.objects.create(
+                ticket = new_ticket,
+                user = request.user,
+                headline = review_form.cleaned_data['headline'],
+                body = review_form.cleaned_data['body'],
+                rating = review_form.cleaned_data['rating'],
+            )
 
             new_ticket.review_id = new_review.id
-            new_review.save()            
             new_ticket.save()
+            new_review.save()            
 
             messages.success(request, 'Your review has been posted!')
             return redirect('review_list')
@@ -110,7 +110,7 @@ def ticket_create(request):
                 user = request.user,
                 title = ticket_form.cleaned_data['title'],
                 body = ticket_form.cleaned_data['body'],
-                picture = ticket_form.cleaned_data['picture']
+                picture = ticket_form.cleaned_data['picture'],
             )
             new_ticket.save()
 
@@ -188,7 +188,7 @@ def ticket_edit(request, id):
         raise PermissionDenied()
 
     if request.method == 'POST':
-        ticket_form = TicketForm(request.POST, instance=ticket)
+        ticket_form = TicketForm(request.POST, request.FILES, instance=ticket)
         if ticket_form.is_valid():
             ticket_form.save()
 
