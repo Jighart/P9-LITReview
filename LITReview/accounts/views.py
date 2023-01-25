@@ -19,11 +19,11 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, 'Connecté !')
-                return redirect('review_list')
+                return redirect('feed')
         else:
             return render(request, 'registration/login.html', {})
     else:
-        return redirect('review_list')
+        return redirect('feed')
 
 
 def logout_view(request):

@@ -1,21 +1,27 @@
-<nav aria-label="Pagination">
-    <hr class="my-0" />
-    <ul class="pagination justify-content-center my-4">
+{% if posts.paginator.num_pages > 1 %}
 
-        {% if page.has_previous %}
-            <li class="page-item"><a class="page-link" href="?page={{page.previous_page_number}}" tabindex="-1" aria-disabled="true">Previous</a></li>
+  <nav class="page-nav mb-3">
+    <ul class="pagination justify-content-center">
+
+      {% if posts.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ posts.previous_page_number }}">Previous</a></li>
+      {% endif %}
+
+      {% for num in posts.paginator.page_range %}
+        {% if posts.number == num %}
+          <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        {% elif num > posts.number|add:'-3' and num < posts.number|add:'3' %}
+          <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
         {% endif %}
-        
-        <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{page.number}}">{{page.number}}</a></li>
-        
-        {% if page.paginator.num_pages != page.number %}
-            <li class="page-item"><a class="page-link">...</a></li>
-            <li class="page-item"><a class="page-link" href="?page={{page.paginator.num_pages}}">{{page.paginator.num_pages}}</a></li>
-        {% endif %}
-        
-        {% if page.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{page.next_page_number}}">Next</a></li>
-        {% endif %}
-        
+      {% endfor %}
+
+      {% if posts.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ posts.next_page_number }}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ posts.paginator.num_pages }}">Last</a></li>
+      {% endif %}
+
     </ul>
-</nav> 
+  </nav>
+
+{% endif %}

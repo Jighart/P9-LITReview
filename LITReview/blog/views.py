@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.db.models import CharField, Value
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
 # from django.views import generic
 # from django.utils.datastructures import MultiValueDictKeyError
 
@@ -29,6 +30,13 @@ def feed(request):
         key=lambda post: post.time_created, 
         reverse=True
     )
+
+    if posts:
+        paginator = Paginator(posts, 5)
+        page = request.GET.get('page')
+        posts = paginator.get_page(page)
+    else:
+        posts = None
 
     context = {
         'posts': posts,
@@ -221,7 +229,13 @@ def ticket_edit(request, id):
 
     else:
         ticket_form = TicketForm(instance=ticket)
-    return render(request, 'blog/review/create_ticket.html', {'ticket_form': ticket_form})
+
+        context = {
+            'ticket_form': ticket_form,
+            'ticket': ticket,
+            # 'title': 'Update Review'
+    }
+    return render(request, 'blog/review/create_ticket.html', context)
 
 
 def ticket_delete(request, id):

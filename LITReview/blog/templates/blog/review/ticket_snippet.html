@@ -1,9 +1,11 @@
 <div class="card mb-4 border-secondary-subtle border-2">
     <div class="card-header border-secondary-subtle h5">{{post.user}} a demandé une critique</div>
-    <div class="row g-0">
-        <div class="col-2 " style="overflow: hidden;">
+    <div class="row g-0 align-items-center">
+        <div class="col-2 text-center" style="overflow: hidden;">
         {% if post.picture %}
             <img src="{{ post.picture.url }}" class="img-fluid object-fit-cover rounded-start" style="height: 100%;" alt="{{ post.title }}">
+        {% else %}
+            <i class="bi bi-book h1 text-primary"></i>
         {% endif %}
         </div>
         <div class="col-6 me-auto">

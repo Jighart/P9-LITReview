@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
 
     <div class="container mb-4">
@@ -37,22 +36,17 @@
     <div class="container mt-2">
         <div class="row">
             <div>
-                <!-- Post content-->
                 <article>
-                    <!-- Post header-->
                     <header class="mb-4">
-                        <!-- Post title-->
                         <h1 class="fw-bolder mb-1">{{review.headline}}</h1>
-                        <!-- Post meta content-->
                         <div class="text-muted fst-italic mb-2">{{review.time_created|date:"d/m/y, H:i" }} par {{ticket.user}}</div>
                     </header>
-                    <!-- Post content-->
                     <p class="star-rating" id="stars">
-                        <i class="bi {% if review.rating > 0 %}bi-star-fill{% else %}bi-star{% endif %}"></i>
-                        <i class="bi {% if review.rating > 1 %}bi-star-fill{% else %}bi-star{% endif %}"></i>
-                        <i class="bi {% if review.rating > 2 %}bi-star-fill{% else %}bi-star{% endif %}"></i>
-                        <i class="bi {% if review.rating > 3 %}bi-star-fill{% else %}bi-star{% endif %}"></i>
-                        <i class="bi {% if review.rating > 4 %}bi-star-fill{% else %}bi-star{% endif %}"></i>
+                        <i class="bi {% if review.rating > 0 %}bi-star-fill text-warning{% else %}bi-star{% endif %}"></i>
+                        <i class="bi {% if review.rating > 1 %}bi-star-fill text-warning{% else %}bi-star{% endif %}"></i>
+                        <i class="bi {% if review.rating > 2 %}bi-star-fill text-warning{% else %}bi-star{% endif %}"></i>
+                        <i class="bi {% if review.rating > 3 %}bi-star-fill text-warning{% else %}bi-star{% endif %}"></i>
+                        <i class="bi {% if review.rating > 4 %}bi-star-fill text-warning{% else %}bi-star{% endif %}"></i>
                     </p>
                     <section class="mb-5">
                         <p class="fs-5 mb-4">{{review.body}}</p>
@@ -62,8 +56,8 @@
         </div>
     </div>
     {% if review.user == user %}
-    <a type="button" class="btn btn-primary btn-sm" href="{% url 'review_edit' review.id %}">Modifier</a>
-    <a type="button" class="btn btn-secondary btn-sm" href="{% url 'review_delete' review.id %}">Supprimer</a>
+        <a type="button" class="btn btn-primary btn-sm" href="{% url 'review_edit' review.id %}">Modifier</a>
+        <a type="button" class="btn btn-secondary btn-sm" href="{% url 'review_delete' review.id %}">Supprimer</a>
     {% endif %}
     {% endif %}
 
