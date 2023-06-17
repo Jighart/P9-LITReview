@@ -3,7 +3,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
-from PIL import Image, ImageOps
+from PIL import Image
 
 
 class Ticket(models.Model):
@@ -13,7 +13,7 @@ class Ticket(models.Model):
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     time_created = models.DateTimeField(default=timezone.now)
     has_review = models.BooleanField(default=False)
-    picture = models.ImageField(blank=True, null=True, upload_to='ticket_pictures')
+    picture = models.ImageField(blank=True, upload_to='ticket_pictures')
 
     def __str__(self):
         return self.title
@@ -31,10 +31,8 @@ class Ticket(models.Model):
         self.resize_image()
 
 
-
-
 class Review(models.Model):
-    ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE)
+    ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE, related_name='reviews')
     rating = models.PositiveSmallIntegerField(
         # validates that rating must be between 0 and 5
         validators=[MinValueValidator(0), MaxValueValidator(5)])
