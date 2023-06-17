@@ -20,6 +20,9 @@ def login_view(request):
                 login(request, user)
                 messages.success(request, 'Connecté !')
                 return redirect('feed')
+            else:
+                messages.error(request, 'Echec de connexion, vérifiez vos identifiants')
+                return redirect('login_view')
         else:
             return render(request, 'registration/login.html', {})
     else:
