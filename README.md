@@ -80,9 +80,8 @@ Identifiant : **Admin** | Mot de passe : **LITReview**
 ### Fonctionnalités
 
 - Se connecter et s'inscrire ;
-- Consulter son profil et le modifier, ajouter une image de profil ;
 - Consulter un flux contenant les tickets et critiques des utilisateurs auxquels on est abonné ;
 - Créer des tickets de demande de critique ;
-- Créer des critiques, en réponse ou non à des tickets ;
+- Créer une critique associée à un ticket ;
 - Voir ses propres posts, les modifier ou les supprimer ;
 - Suivre d'autres utilisateurs, ou se désabonner.
