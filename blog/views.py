@@ -14,12 +14,12 @@ def feed(request):
     reviews = get_user_viewable_reviews(request.user)
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
-    tickets = get_user_viewable_tickets(request.user) 
+    tickets = get_user_viewable_tickets(request.user)
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
     posts = sorted(
-        chain(reviews, tickets), 
-        key=lambda post: post.time_created, 
+        chain(reviews, tickets),
+        key=lambda post: post.time_created,
         reverse=True
     )
 
@@ -46,8 +46,8 @@ def own_posts(request):
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
     posts = sorted(
-        chain(reviews, tickets), 
-        key=lambda post: post.time_created, 
+        chain(reviews, tickets),
+        key=lambda post: post.time_created,
         reverse=True
     )
 
@@ -78,7 +78,7 @@ def ticket_detail(request, id):
         'review': review,
     }
 
-    return render(request, 'blog/review/ticket_detail.html', context)    
+    return render(request, 'blog/review/ticket_detail.html', context)
 
 
 def review_create(request):
@@ -88,26 +88,26 @@ def review_create(request):
 
         if all([ticket_form.is_valid() and review_form.is_valid()]):
             new_ticket = Ticket.objects.create(
-                user = request.user,
-                title = ticket_form.cleaned_data['title'],
-                body = ticket_form.cleaned_data['body'],
-                picture = ticket_form.cleaned_data['picture'],
-                has_review = True,
+                user=request.user,
+                title=ticket_form.cleaned_data['title'],
+                body=ticket_form.cleaned_data['body'],
+                picture=ticket_form.cleaned_data['picture'],
+                has_review=True,
             )
             new_ticket.save()
 
             new_review = Review.objects.create(
-                ticket = new_ticket,
-                user = request.user,
-                headline = review_form.cleaned_data['headline'],
-                body = review_form.cleaned_data['body'],
-                rating = review_form.cleaned_data['rating'],
-            )           
-            new_review.save()            
+                ticket=new_ticket,
+                user=request.user,
+                headline=review_form.cleaned_data['headline'],
+                body=review_form.cleaned_data['body'],
+                rating=review_form.cleaned_data['rating'],
+            )
+            new_review.save()
 
             messages.success(request, 'Votre critique a été publiée !')
             return redirect('feed')
-    
+
     else:
         ticket_form = TicketForm()
         review_form = ReviewForm()
@@ -125,16 +125,16 @@ def ticket_create(request):
         ticket_form = TicketForm(request.POST, request.FILES or None)
         if ticket_form.is_valid():
             new_ticket = Ticket.objects.create(
-                user = request.user,
-                title = ticket_form.cleaned_data['title'],
-                body = ticket_form.cleaned_data['body'],
-                picture = ticket_form.cleaned_data['picture'],
+                user=request.user,
+                title=ticket_form.cleaned_data['title'],
+                body=ticket_form.cleaned_data['body'],
+                picture=ticket_form.cleaned_data['picture'],
             )
             new_ticket.save()
 
             messages.success(request, 'Votre ticket a été créé !')
             return redirect('feed')
-    
+
     else:
         ticket_form = TicketForm()
     return render(request, 'blog/review/create_ticket.html', {'ticket_form': ticket_form})
@@ -150,19 +150,19 @@ def ticket_respond(request, id):
 
     if request.method == 'POST' and review_form.is_valid():
         new_review = Review.objects.create(
-                ticket = ticket,
-                user = request.user,
-                headline = review_form.cleaned_data['headline'],
-                body = review_form.cleaned_data['body'],
-                rating = review_form.cleaned_data['rating'],
-            )
+            ticket=ticket,
+            user=request.user,
+            headline=review_form.cleaned_data['headline'],
+            body=review_form.cleaned_data['body'],
+            rating=review_form.cleaned_data['rating'],
+        )
         new_review.save()
 
         ticket.has_review = True
         ticket.save()
         messages.success(request, 'Vous avez répondu au ticket !')
         return redirect('/ticket/' + id)
-    
+
     else:
         review_form = ReviewForm()
 
@@ -220,7 +220,7 @@ def ticket_edit(request, id):
             'ticket_form': ticket_form,
             'ticket': ticket,
             # 'title': 'Update Review'
-    }
+        }
     return render(request, 'blog/review/create_ticket.html', context)
 
 
@@ -240,7 +240,6 @@ def ticket_delete(request, id):
 
 def review_delete(request, id):
     review = get_object_or_404(Review, id=id)
-    
 
     if review.user != request.user:
         raise PermissionDenied()
@@ -255,5 +254,3 @@ def review_delete(request, id):
         return redirect('feed')
 
     return render(request, 'blog/review/delete.html', {'review': review})
-
-

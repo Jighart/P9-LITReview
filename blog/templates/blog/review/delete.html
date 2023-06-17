@@ -3,9 +3,9 @@
 
 {% block content %}
 
-<h1>Supprimer le groupe</h1>
+<h1>Supprimer le post</h1>
 
-<p>Etes-vous sûr de vouloir supprimer le ticket : {{ ticket.title }} ?</p>
+<p>Êtes-vous sûr de vouloir supprimer le post : {{ ticket.title }}{{ review }} ?</p>
 
 <form action="" method="post">
 {% csrf_token %}
