@@ -39,7 +39,7 @@
                 <article>
                     <header class="mb-4">
                         <h1 class="fw-bolder mb-1">{{review.headline}}</h1>
-                        <div class="text-muted fst-italic mb-2">{{review.time_created|date:"d/m/y, H:i" }} par {{ticket.user}}</div>
+                        <div class="text-muted fst-italic mb-2">{{review.time_created|date:"d/m/y, H:i" }} par {{review.user}}</div>
                     </header>
                     <p class="star-rating" id="stars">
                         <i class="bi {% if review.rating > 0 %}bi-star-fill text-warning{% else %}bi-star{% endif %}"></i>
