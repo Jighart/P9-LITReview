@@ -37,10 +37,7 @@
   {% endif %}
     <!-- Page content-->
 
-                <!-- Pagination-->
-                {% include 'blog/layout/pagination.html' with page=page_obj %}
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- Pagination-->
+  {% include 'blog/layout/pagination.html' with page=page_obj %}
+
 {% endblock content %}
