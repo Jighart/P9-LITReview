@@ -25,7 +25,7 @@
             <div class="card-body border-1">
                 <h5 class="card-title">{{ post.headline }}</h5>
                 <p class="card-text">{{ post.body|truncatechars:100 }}</p>
-                <p class="star-rating" id="stars">
+                <p class="star-rating">
                     <i class="bi {% if post.rating > 0 %}bi-star-fill text-warning{% else %}bi-star{% endif %}"></i>
                     <i class="bi {% if post.rating > 1 %}bi-star-fill text-warning{% else %}bi-star{% endif %}"></i>
                     <i class="bi {% if post.rating > 2 %}bi-star-fill text-warning{% else %}bi-star{% endif %}"></i>
