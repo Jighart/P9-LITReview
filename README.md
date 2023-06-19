@@ -71,17 +71,17 @@ Identifiant : **Admin** | Mot de passe : **LITReview**
 
 | *Identifiant* | *Mot de passe* |
 |---------------|----------------|
-| Admin         | LITReview    |
-| Test_user_1   | LITReview    |
-| Test_user_2   | LITReview    |
-| Test_user_3   | LITReview    |
+| Admin         | LITReview      |
+| Test_user_1   | LITReview      |
+| Test_user_2   | LITReview      |
+| Test_user_3   | LITReview      |
 
 
 ### Fonctionnalités
 
-- Se connecter et s'inscrire ;
-- Consulter un flux contenant les tickets et critiques des utilisateurs auxquels on est abonné ;
-- Créer des tickets de demande de critique ;
-- Créer une critique associée à un ticket ;
-- Voir ses propres posts, les modifier ou les supprimer ;
-- Suivre d'autres utilisateurs, ou se désabonner.
+- Se connecter et s'inscrire
+- Consulter un flux contenant les tickets et critiques des utilisateurs auxquels on est abonné
+- Créer des tickets de demande de critique
+- Créer une critique associée à un ticket
+- Voir ses propres posts, les modifier ou les supprimer
+- Suivre d'autres utilisateurs, ou se désabonner
