@@ -71,7 +71,6 @@ def subscriptions(request):
             except User.DoesNotExist:
                 messages.error(request, f'L\'utilistateur {follow_form.data["followed_user"]} n\'existe pas !')
 
-
     else:
         follow_form = FollowForm()
 
@@ -87,8 +86,8 @@ def subscriptions(request):
     return render(request, 'follows.html', context)
 
 
-def unfollow(request, id):
-    follow = get_object_or_404(UserFollow, id=id)
+def unfollow(request, user_id):
+    follow = get_object_or_404(UserFollow, id=user_id)
 
     if follow.user != request.user:
         raise PermissionDenied()

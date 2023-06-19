@@ -4,12 +4,13 @@
     {% if post.picture %}
         <div class="col-2" style="overflow: hidden;">
             <img src="{{ post.picture.url }}" class="img-fluid object-fit-cover rounded-start" style="height: 100%;" alt="{{ post.title }}">
+        </div>
     {% else %}
         <div class="col-2 text-center">
             <i class="bi bi-book h1 text-primary"></i>
-    {% endif %}
         </div>
-    </div>
+    {% endif %}
+
         <div class="col-6 me-auto border-end border-secondary-subtle border-1">
             <div class="card-body">
                 <h5 class="card-title">{{ post.title }}</h5>
