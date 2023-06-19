@@ -16,17 +16,17 @@
                 <h5 class="card-title">{{ post.title }}</h5>
                 <p class="card-text">{{ post.body|truncatechars:250 }}</p>
                 <p class="card-text"><small class="text-muted">{{ post.time_created|date:"d/m/y, H:i" }} -- {{post.user}}</small></p>
-                <a type="button" class="btn btn-primary btn-sm" href="{% url 'ticket_detail' post.id %}">Voir plus...</a>
+                <a class="btn btn-primary btn-sm" href="{% url 'ticket_detail' post.id %}">Voir plus...</a>
             </div>
         </div>
         <div class="col-4">
             <div class="card-body border-1">
                 {% if post.has_review is None %}
                     <p class="card-text">Vous voulez répondre ?</p>
-                    <a type="button" class="btn btn-success" href="{% url 'ticket_respond' post.id %}">Poster une critique</a>
+                    <a class="btn btn-success" href="{% url 'ticket_respond' post.id %}">Poster une critique</a>
                 {% else %}
                 <p class="card-text">Ce ticket a déjà reçu une réponse</p>
-                <a type="button" class="btn btn-primary" href="{% url 'ticket_detail' post.id %}">Voir la critique</a>
+                <a class="btn btn-primary" href="{% url 'ticket_detail' post.id %}">Voir la critique</a>
                 {% endif %}
             </div>
         </div>

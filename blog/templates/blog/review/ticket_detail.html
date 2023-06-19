@@ -27,8 +27,8 @@
         </div>
     </div>
     {% if ticket.user == user %}
-        <a type="button" class="btn btn-primary btn-sm" href="{% url 'ticket_edit' ticket.id %}">Modifier</a>
-        <a type="button" class="btn btn-secondary btn-sm" href="{% url 'ticket_delete' ticket.id %}">Supprimer</a>
+        <a class="btn btn-primary btn-sm" href="{% url 'ticket_edit' ticket.id %}">Modifier</a>
+        <a class="btn btn-secondary btn-sm" href="{% url 'ticket_delete' ticket.id %}">Supprimer</a>
     {% endif %}
 
     {% if review %}
@@ -56,8 +56,8 @@
         </div>
     </div>
     {% if review.user == user %}
-        <a type="button" class="btn btn-primary btn-sm" href="{% url 'review_edit' review.id %}">Modifier</a>
-        <a type="button" class="btn btn-secondary btn-sm" href="{% url 'review_delete' review.id %}">Supprimer</a>
+        <a class="btn btn-primary btn-sm" href="{% url 'review_edit' review.id %}">Modifier</a>
+        <a class="btn btn-secondary btn-sm" href="{% url 'review_delete' review.id %}">Supprimer</a>
     {% endif %}
     {% endif %}
 

@@ -1,10 +1,11 @@
 <div class="card mb-4 border-secondary-subtle border-2">
     <div class="card-header border-secondary-subtle h5">
         {% if post.user != post.ticket.user %}
-            {{post.user}} a répondu à une demande de critique</div>
+            {{post.user}} a répondu à une demande de critique
         {% else %}
-            {{post.user}} a posté une nouvelle critique</div>
+            {{post.user}} a posté une nouvelle critique
         {% endif %}
+    </div>
     <div class="row g-0">
         <div class="col-2" style="overflow: hidden;">
         {% if post.ticket.picture %}
@@ -32,7 +33,7 @@
                     <i class="bi {% if post.rating > 4 %}bi-star-fill text-warning{% else %}bi-star{% endif %}"></i>
                   </p>
                 <p class="card-text"><small class="text-muted">{{ post.time_created|date:"d/m/y, H:i" }} -- {{post.user}}</small></p>
-                <a type="button" class="btn btn-primary btn-sm" href="{% url 'ticket_detail' post.ticket.id %}">Voir plus...</a>
+                <a class="btn btn-primary btn-sm" href="{% url 'ticket_detail' post.ticket.id %}">Voir plus...</a>
             </div>
         </div>
     </div>
