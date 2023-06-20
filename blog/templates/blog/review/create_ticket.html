@@ -15,7 +15,11 @@
             <div>
                 {{ticket_form.picture}}
             </div>
+            {% if ticket.picture %}
             <img src="{{ ticket.picture.url }}" class="img-fluid object-fit-cover mt-3" style="height: 100%;" alt="{{ ticket.title }}">
+            {% else %}
+            <p class="py-3">Pas d'image sur ce ticket</p>
+            {% endif %}
             <div class="d-grid">
                 <button class="btn btn-primary btn-lg mt-4" id="submitButton" type="submit">Submit</button>
             </div>
