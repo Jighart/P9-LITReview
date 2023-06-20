@@ -21,7 +21,7 @@
         </div>
         <div class="col-4">
             <div class="card-body border-1">
-                {% if post.has_review is None %}
+                {% if post.has_review is False %}
                     <p class="card-text">Vous voulez répondre ?</p>
                     <a class="btn btn-success" href="{% url 'ticket_respond' post.id %}">Poster une critique</a>
                 {% else %}
