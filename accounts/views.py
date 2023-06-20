@@ -86,8 +86,8 @@ def subscriptions(request):
     return render(request, 'follows.html', context)
 
 
-def unfollow(request, user_id):
-    follow = get_object_or_404(UserFollow, id=user_id)
+def unfollow(request, id):
+    follow = get_object_or_404(UserFollow, id=id)
 
     if follow.user != request.user:
         raise PermissionDenied()
